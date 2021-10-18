@@ -69,12 +69,13 @@ Except special cases, we always recommend to use our [COCO pretrained weights](h
 
 Once you get the Exp file and the COCO pretrained weights we provided, you can train your own model by the following below command:
 ```bash
-python tools/train.py -f /path/to/your/Exp/file -d 8 -b 64 --fp16 -o -c /path/to/the/pretrained/weights
+python tools/train.py -f /path/to/your/Exp/file -d 8 -b 64 --fp16 -o -c /path/to/the/pretrained/weights [--cache]
 ```
+* --cache: we now support RAM caching to speed up training! Make sure you have enough system RAM when adopting it. 
 
 or take the `YOLOX-S` VOC training for example:
 ```bash
-python tools/train.py -f exps/example/yolox_voc/yolox_voc_s.py -d 8 -b 64 --fp16 -o -c /path/to/yolox_s.pth
+python tools/train.py -f exps/example/yolox_voc/yolox_voc_s.py -d 8 -b 64 --fp16 -o -c /path/to/yolox_s.pth [--cache]
 ```
 
 ✧✧✧ For example:
@@ -121,7 +122,7 @@ Generally, for small models, you should weak the aug, while for large models or 
     self.degrees = 10.0
     self.translate = 0.1
     self.scale = (0.1, 2)
-    self.mscale = (0.8, 1.6)
+    self.mosaic_scale = (0.8, 1.6)
     self.shear = 2.0
     self.perspective = 0.0
     self.enable_mixup = True
