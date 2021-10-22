@@ -1,0 +1,8 @@
+/datasets/COCO/test2017/000000000001.jpg
+/datasets/COCO/test2017/000000000016.jpg
+/datasets/COCO/test2017/000000000019.jpg
+/datasets/COCO/test2017/000000000057.jpg
+/datasets/COCO/test2017/000000000063.jpg
+/datasets/COCO/test2017/000000000069.jpg
+/datasets/COCO/test2017/000000000080.jpg
+/datasets/COCO/test2017/000000000090.jpg
