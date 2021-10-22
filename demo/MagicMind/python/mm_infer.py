@@ -3,9 +3,12 @@ import numpy as np
 import cv2
 import argparse
 import sys
+from demo.MagicMind.python.magicmind_model import MagicMindModel
 
 import magicmind.python.runtime as mm
 from magicmind.python.runtime import Context
+
+from magicmind_model import MagicMindModel
 
 sys.path.append("/workspace/zhangxiao/work/YOLOX/")
 from yolox.data.data_augment import preproc as preprocess
@@ -51,39 +54,13 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    mm_model = MagicMindModel(args.mm_file_name, mm_dump=args.mm_dump, device_id=0)
+
     input_shape = args.input_shapes[0][2:4]
     origin_img = cv2.imread(args.image_path)
     img, ratio = preprocess(origin_img, input_shape)
 
-    dev = mm.Device()
-    dev.id = 0
-    assert dev.active().ok(), "device error"
-    #创建model
-    model = build_model(args)
-    with mm.System():
-        # 创建运行模型时的上下文
-        context = create_context(model, args)
-        # 创建队列
-        queue = dev.create_queue()
-        assert queue != None
-        # 创建input
-        inputs = context.create_inputs()
-        assert type(inputs) != mm.Status
-        # 传入需要推理的数据
-        inputs[0].from_numpy(img[np.newaxis,])
-        inputs[0].to(dev)
-        # 创建output
-        outputs = []
-        assert type(outputs) != mm.Status
-        for out in outputs:
-            out.to(dev)
-        # 发送任务
-        status = context.enqueue(inputs, outputs, queue)
-        # 阻塞队列，直至得到运行结果
-        queue.sync()
-        assert status.ok(), "inference error"
-        for tensor in outputs:
-            print(tensor.shape)
+    outputs = mm_model(img[np.newaxis, ])
 
     predictions = demo_postprocess(outputs[0].asnumpy(), input_shape, p6=args.with_p6)[0]
 
