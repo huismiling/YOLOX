@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-import torch.nn as nn
+import torch
 
 import magicmind.python.runtime as mm
 from magicmind.python.runtime import Context
@@ -60,6 +60,8 @@ class MagicMindModel():
 
     def forward(self, x, targets=None):
         # fpn output content features of [dark3, dark4, dark5]
+        if isinstance(x, torch.Tensor):
+            x = x.numpy()
         self.inputs[0].from_numpy(x)
         self.inputs[0].to(self.dev)
         # 创建output
@@ -73,12 +75,12 @@ class MagicMindModel():
         self.queue.sync()
         assert status.ok(), "inference error"
 
-        return outputs
+        return torch.from_numpy(outputs[0].asnumpy())
 
     def __call__(self, x):
         return self.forward(x)
 
-
-
+    def eval(self):
+        return self
 
 
