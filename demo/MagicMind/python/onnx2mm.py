@@ -9,9 +9,8 @@ from calibrator_custom_data import FixedCalibData
 parser = argparse.ArgumentParser()
 
 # 基础参数，必选
-parser.add_argument("--builder_config", help="",type=str, default="builder_config.json")
 parser.add_argument("--onnx", help="", type=str, default="yolox_m.onnx")
-parser.add_argument("--mm_file_name", help="", type=str, default="yolox_m_quantized.model")
+parser.add_argument("--mm_file_name", help="", type=str, default="yolox_m_int8fp16.model")
 parser.add_argument("--quant_list", help="", type=str, default="quant_list.txt")
 parser.add_argument("--input_shapes", help="", type=list, default=[[1, 3, 640, 640]])
 parser.add_argument("--input_dtypes", help="", type=list, default=["float32"])
@@ -36,17 +35,6 @@ def build_model(network):
     cfg_dict = {
                     "archs": ["mtp_270"],
                     "graph_shape_mutable": True,
-                    # "convert_input_layout": {
-                    #     "0": {"src": "NCHW", "dst": "NHWC"}
-                    # },
-                    # "convert_output_layout": {
-                    #     "0": {"src": "NCHW", "dst": "NCHW"}
-                    # },
-                    # "precision_config": {
-                    #     "precision_mode": "qint8_mixed_float16",
-                    #     "weight_quant_granularity": "per_axis",
-                    #     "activation_quant_algo": "symmetric"
-                    # },
                     "opt_config": {
                         "type64to32_conversion": False,
                         "conv_scale_fold": False
@@ -76,6 +64,7 @@ def build_model(network):
         assert calibrator.set_quantization_algorithm(mm.QuantizationAlgorithm.LINEAR_ALGORITHM).ok()
         assert config.parse_from_string("""{"precision_config": {"precision_mode": "qint8_mixed_float16"}}""").ok()
         assert config.parse_from_string("""{"precision_config": {"weight_quant_granularity": "per_axis"}}""").ok()
+        assert config.parse_from_string("""{"precision_config": {"activation_quant_algo": "symmetric"}}""").ok()
 
         # calibrate the network
         calibrator.calibrate(network, config)
