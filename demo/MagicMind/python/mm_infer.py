@@ -20,8 +20,7 @@ from yolox.utils import mkdir, multiclass_nms, demo_postprocess, vis
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    # 基础参数，必选
-    parser.add_argument("--builder_config", help="",type=str, default="builder_config.json")
+    # 基础参数
     parser.add_argument("--mm_file_name", help="", type=str, default="yolox_m_int8fp16.model")
     parser.add_argument("--mm_dump", help="", action="store_true")
     parser.add_argument("--image_path", help="", type=str, default="../../../assets/dog.jpg")
