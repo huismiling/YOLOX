@@ -186,8 +186,7 @@ def multiclass_nms_class_agnostic(boxes, scores, nms_thr, score_thr):
     return dets
 
 
-def demo_postprocess(outputs, img_size, p6=False):
-
+def demo_postprocess(outputs, img_size, p6=False, dtype="float32"):
     grids = []
     expanded_strides = []
 
