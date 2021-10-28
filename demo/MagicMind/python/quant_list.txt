@@ -6,3 +6,5 @@
 /datasets/COCO/test2017/000000000069.jpg
 /datasets/COCO/test2017/000000000080.jpg
 /datasets/COCO/test2017/000000000090.jpg
+/datasets/COCO/test2017/000000000106.jpg
+/datasets/COCO/test2017/000000000108.jpg

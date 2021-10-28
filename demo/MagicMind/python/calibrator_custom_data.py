@@ -5,6 +5,7 @@ import numpy
 import magicmind.python.runtime as mm
 from magicmind.python.common.types import get_numpy_dtype_by_datatype
 
+import os
 import sys
 sys.path.append("/workspace/zhangxiao/work/YOLOX/")
 from yolox.data.data_augment import preproc as preprocess
@@ -29,7 +30,7 @@ class FixedCalibData(mm.CalibDataInterface):
         self.data_type_ = data_type
         self.batch_size_ = shape.GetDimValue(0)
         self.input_wh = [shape.GetDimValue(3), shape.GetDimValue(2)]
-        data_lines = [itd.strip() for itd in open(data_paths).readlines()]
+        data_lines = [itd.strip() for itd in open(data_paths).readlines() if os.path.isfile(itd.strip())]
         self.max_samples_ = min(max_samples, len(data_lines))
         self.data_paths_ = data_lines
 
