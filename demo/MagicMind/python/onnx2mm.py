@@ -12,6 +12,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--onnx", help="", type=str, default="yolox_m.onnx")
 parser.add_argument("--mm_file_name", help="", type=str, default="yolox_m_int8fp16.model")
 parser.add_argument("--quant_list", help="", type=str, default="quant_list.txt")
+# quant_mode supports 
+# "qint8_mixed_float32","qint8_mixed_float16", 
+# "qint16_mixed_float32", "qint16_mixed_float16", 
+# "force_float16" and "force_float32".
+parser.add_argument("--quant_mode", help="", type=str, default="qint8_mixed_float16")
 parser.add_argument("--input_shapes", help="", type=list, default=[[1, 3, 640, 640]])
 parser.add_argument("--input_dtypes", help="", type=list, default=["float32"])
 
@@ -62,9 +67,14 @@ def build_model(network):
         # create calibrator
         calibrator = mm.Calibrator([calib_data])
         assert calibrator.set_quantization_algorithm(mm.QuantizationAlgorithm.LINEAR_ALGORITHM).ok()
-        assert config.parse_from_string("""{"precision_config": {"precision_mode": "qint8_mixed_float16"}}""").ok()
-        assert config.parse_from_string("""{"precision_config": {"weight_quant_granularity": "per_axis"}}""").ok()
-        assert config.parse_from_string("""{"precision_config": {"activation_quant_algo": "symmetric"}}""").ok()
+        precision_dict = {
+                        "precision_config": {
+                            "precision_mode": args.quant_mode,
+                            "weight_quant_granularity": "per_axis",
+                            "activation_quant_algo": "symmetric",
+                        }
+                    }
+        assert config.parse_from_string(json.dumps(precision_dict)).ok()
 
         # calibrate the network
         calibrator.calibrate(network, config)
