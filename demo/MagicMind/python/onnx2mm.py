@@ -34,9 +34,9 @@ def build_model(network):
     # config.parse_from_file(args.builder_config)
     cfg_dict = {
                     "archs": ["mtp_270"],
-                    "graph_shape_mutable": True,
+                    "graph_shape_mutable": False,
                     "opt_config": {
-                        "type64to32_conversion": False,
+                        "type64to32_conversion": True,
                         "conv_scale_fold": False
                     },
                     "file_path": "dump_file",
