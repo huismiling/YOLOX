@@ -3,7 +3,6 @@ import numpy as np
 import cv2
 import argparse
 import sys
-from demo.MagicMind.python.magicmind_model import MagicMindModel
 
 import torch
 

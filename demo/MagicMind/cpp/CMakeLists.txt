@@ -28,6 +28,6 @@ link_directories($ENV{LIBTORCH_HOME}/lib/)
 link_directories(${OpenCV_LIBRARY_DIRS})
 
 add_executable(mm_yolox mm_yolox.cpp infer_model.cpp sample_buffer.cpp)
-target_link_libraries(mm_yolox cnrt magicmind ${OpenCV_LIBS})
+target_link_libraries(mm_yolox cnrt magicmind magicmind_runtime ${OpenCV_LIBS})
 
 
