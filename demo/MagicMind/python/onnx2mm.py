@@ -4,6 +4,7 @@ import numpy as np
 import argparse
 import magicmind.python.runtime as mm
 from magicmind.python.runtime import Context
+from magicmind.python.runtime.parser import Parser as mmParser
 from calibrator_custom_data import FixedCalibData
 
 parser = argparse.ArgumentParser()
@@ -25,7 +26,7 @@ args = parser.parse_args()
 # 解析模型
 def parse_model():
     network = mm.Network()
-    parser = mm.Parser(mm.ModelKind.kOnnx)
+    parser = mmParser(mm.ModelKind.kOnnx)
     status = parser.parse(network, args.onnx)
     assert status.ok(), "parser network error"
     for i in range(len(args.input_shapes)):

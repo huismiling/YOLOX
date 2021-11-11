@@ -60,22 +60,12 @@ def postprocess(prediction, num_classes, conf_thre=0.7, nms_thre=0.45, class_agn
                 nms_thre,
             )
         else:
-            # TODO revert with mm 0.6
-            # nms_out_index = torchvision.ops.batched_nms(
-            #     detections[:, :4],
-            #     detections[:, 4] * detections[:, 5],
-            #     detections[:, 6],
-            #     nms_thre,
-            # )
-            boxes = detections[:, :4]
-            scores = detections[:, 4] * detections[:, 5]
-            idxs = detections[:, 6]
-            if boxes.numel() == 0:
-                return torch.empty((0,), dtype=torch.int64, device=boxes.device)
-            max_coordinate = boxes.max()
-            offsets = idxs.to(boxes) * (max_coordinate + torch.tensor(1).to(boxes))
-            boxes_for_nms = boxes + offsets[:, None]
-            nms_out_index = torchvision.ops.nms(boxes_for_nms, scores, nms_thre)
+            nms_out_index = torchvision.ops.batched_nms(
+                detections[:, :4],
+                detections[:, 4] * detections[:, 5],
+                detections[:, 6],
+                nms_thre,
+            )
 
         detections = detections[nms_out_index]
         if output[i] is None:

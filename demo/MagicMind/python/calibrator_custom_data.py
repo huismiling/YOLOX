@@ -7,8 +7,24 @@ from magicmind.python.common.types import get_numpy_dtype_by_datatype
 
 import os
 import sys
-sys.path.append("/workspace/zhangxiao/work/YOLOX/")
-from yolox.data.data_augment import preproc as preprocess
+
+def preprocess(img, input_size, swap=(2, 0, 1)):
+    if len(img.shape) == 3:
+        padded_img = numpy.ones((input_size[0], input_size[1], 3), dtype=numpy.uint8) * 114
+    else:
+        padded_img = numpy.ones(input_size, dtype=numpy.uint8) * 114
+
+    r = min(input_size[0] / img.shape[0], input_size[1] / img.shape[1])
+    resized_img = cv2.resize(
+        img,
+        (int(img.shape[1] * r), int(img.shape[0] * r)),
+        interpolation=cv2.INTER_LINEAR,
+    ).astype(numpy.uint8)
+    padded_img[: int(img.shape[0] * r), : int(img.shape[1] * r)] = resized_img
+
+    padded_img = padded_img.transpose(swap)
+    padded_img = numpy.ascontiguousarray(padded_img, dtype=numpy.float32)
+    return padded_img, r
 
 
 def load_multi_image(data_paths: List[str], input_wh = List[int], target_dtype: mm.DataType = mm.DataType.FLOAT32) -> numpy.ndarray:
